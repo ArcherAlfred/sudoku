@@ -12,6 +12,8 @@
             align-items: center;
             padding: 20px;
             background-color: #f0f0f0;
+            margin: 0;
+            min-height: 100vh;
         }
         
         h1 {
@@ -124,6 +126,134 @@
             border: 1px solid #f5c6cb;
         }
         
+        /* 成功动画效果 */
+        .success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+        
+        .celebration-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: bold;
+            color: gold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            opacity: 0;
+            animation: celebrate-pulse 1.5s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes celebrate-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* 虚拟键盘样式 */
+        .virtual-keyboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(51, 51, 51, 0.9);
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .virtual-keyboard.active {
+            transform: translateY(0);
+        }
+        
+        .key {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 8px;
+            padding: 15px 5px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #333;
+        }
+        
+        .key:hover {
+            background-color: rgba(224, 224, 224, 0.95);
+        }
+        
+        .key.action {
+            background-color: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+        
+        .key.delete {
+            background-color: rgba(244, 67, 54, 0.9);
+            color: white;
+        }
+        
+        .keyboard-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .keyboard-overlay.active {
+            display: block;
+        }
+        
+        @media (min-width: 601px) {
+            .virtual-keyboard {
+                display: none;
+            }
+        }
+        
         @media (max-width: 600px) {
             .cell {
                 width: 30px;
@@ -156,6 +286,26 @@
         
         <div class="timer" id="timer">时间: 00:00</div>
         <div class="message" id="message" style="display: none;"></div>
+        
+        <!-- 虚拟键盘 -->
+        <div class="keyboard-overlay" id="keyboardOverlay"></div>
+        <div class="virtual-keyboard" id="virtualKeyboard">
+            <button class="key" data-value="1">1</button>
+            <button class="key" data-value="2">2</button>
+            <button class="key" data-value="3">3</button>
+            <button class="key" data-value="4">4</button>
+            <button class="key" data-value="5">5</button>
+            <button class="key" data-value="6">6</button>
+            <button class="key" data-value="7">7</button>
+            <button class="key" data-value="8">8</button>
+            <button class="key" data-value="9">9</button>
+            <button class="key action" id="clearBtn">清空</button>
+        </div>
+        
+        <!-- 成功动画效果 -->
+        <div class="success-animation" id="successAnimation">
+            <div class="celebration-text">🏆</div>
+        </div>
     </div>
 
     <script>
@@ -170,6 +320,7 @@
                 
                 this.initializeGame();
                 this.setupEventListeners();
+                this.setupVirtualKeyboard();
             }
             
             initializeGame() {
@@ -385,9 +536,21 @@
                             cell.classList.add('pre-filled');
                         }
                         
-                        cell.addEventListener('click', () => this.selectCell(row, col));
+                        cell.addEventListener('click', (e) => {
+                            if (!this.isMobileDevice()) {
+                                // 桌面端：保持原有行为
+                                this.selectCell(row, col);
+                            } else {
+                                // 移动端：直接处理
+                                if (!this.isInitialCell(row, col)) {
+                                    this.selectedCell = { row, col };
+                                    this.showVirtualKeyboard();
+                                    this.highlightSelectedCell();
+                                }
+                            }
+                        });
                         
-                        // 添加键盘事件监听
+                        // 添加键盘事件监听（仅桌面端）
                         cell.addEventListener('keydown', (e) => {
                             if (!this.isInitialCell(row, col)) {
                                 const num = parseInt(e.key);
@@ -480,17 +643,28 @@
             }
             
             checkSolution() {
-                // 验证当前网格是否完整且正确
+                // 检查是否有错误（即使有空格也要检查）
+                let hasErrors = false;
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (this.grid[row][col] !== 0 && !this.validateCell(row, col)) {
+                            hasErrors = true;
+                        }
+                    }
+                }
+                
+                // 如果有错误，先标记错误位置
+                if (hasErrors) {
+                    this.highlightErrors();
+                    this.showMessage('数独有误，请检查标记为红色的格子！', 'error');
+                    return false;
+                }
+                
+                // 检查是否完成
                 for (let row = 0; row < 9; row++) {
                     for (let col = 0; col < 9; col++) {
                         if (this.grid[row][col] === 0) {
                             this.showMessage('数独未完成，请填满所有空格！', 'error');
-                            return false;
-                        }
-                        
-                        if (!this.validateCell(row, col)) {
-                            this.highlightErrors();
-                            this.showMessage('数独有误，请检查标记为红色的格子！', 'error');
                             return false;
                         }
                     }
@@ -499,6 +673,7 @@
                 // 如果全部正确
                 this.showMessage('恭喜你，数独解答正确！', 'success');
                 this.stopTimer();
+                this.showCelebration(); // 显示庆祝动画
                 return true;
             }
             
@@ -578,6 +753,163 @@
                     this.timerInterval = null;
                 }
             }
+            
+            setupVirtualKeyboard() {
+                const virtualKeyboard = document.getElementById('virtualKeyboard');
+                const keyboardOverlay = document.getElementById('keyboardOverlay');
+                const clearBtn = document.getElementById('clearBtn');
+                
+                // 数字键点击事件
+                document.querySelectorAll('#virtualKeyboard .key[data-value]').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const value = parseInt(e.target.getAttribute('data-value'));
+                        if (this.selectedCell && !this.isInitialCell(this.selectedCell.row, this.selectedCell.col)) {
+                            this.setCellValue(this.selectedCell.row, this.selectedCell.col, value);
+                            this.updateSelectedCellDisplay(value);
+                        }
+                    });
+                });
+                
+                // 清空按钮
+                clearBtn.addEventListener('click', () => {
+                    if (this.selectedCell && !this.isInitialCell(this.selectedCell.row, this.selectedCell.col)) {
+                        this.setCellValue(this.selectedCell.row, this.selectedCell.col, 0);
+                        this.updateSelectedCellDisplay(0);
+                    }
+                });
+                
+                // 点击遮罩层关闭键盘
+                keyboardOverlay.addEventListener('click', () => {
+                    this.closeVirtualKeyboard();
+                });
+                
+                // 单元格点击时显示键盘（仅在移动端）
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.addEventListener('click', (e) => {
+                        if (this.isMobileDevice()) {
+                            const row = parseInt(e.target.dataset.row);
+                            const col = parseInt(e.target.dataset.col);
+                            
+                            if (!this.isInitialCell(row, col)) {
+                                this.selectedCell = { row, col };
+                                this.showVirtualKeyboard();
+                                this.highlightSelectedCell();
+                            }
+                        }
+                    });
+                });
+            }
+            
+            showVirtualKeyboard() {
+                const virtualKeyboard = document.getElementById('virtualKeyboard');
+                const keyboardOverlay = document.getElementById('keyboardOverlay');
+                
+                virtualKeyboard.classList.add('active');
+                keyboardOverlay.classList.add('active');
+                
+                // 防止页面滚动
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeVirtualKeyboard() {
+                const virtualKeyboard = document.getElementById('virtualKeyboard');
+                const keyboardOverlay = document.getElementById('keyboardOverlay');
+                
+                virtualKeyboard.classList.remove('active');
+                keyboardOverlay.classList.remove('active');
+                
+                // 恢复页面滚动
+                document.body.style.overflow = '';
+            }
+            
+            highlightSelectedCell() {
+                // 清除之前的选中状态
+                document.querySelectorAll('.cell.selected').forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+                
+                // 设置当前选中状态
+                if (this.selectedCell) {
+                    const cell = document.querySelector(
+                        `.cell[data-row="${this.selectedCell.row}"][data-col="${this.selectedCell.col}"]`
+                    );
+                    if (cell) {
+                        cell.classList.add('selected');
+                    }
+                }
+            }
+            
+            updateSelectedCellDisplay(value) {
+                if (this.selectedCell) {
+                    const cell = document.querySelector(
+                        `.cell[data-row="${this.selectedCell.row}"][data-col="${this.selectedCell.col}"]`
+                    );
+                    if (cell) {
+                        cell.textContent = value !== 0 ? value : '';
+                        
+                        // 移除错误类
+                        cell.classList.remove('error');
+                    }
+                }
+            }
+            
+            isMobileDevice() {
+                return window.innerWidth <= 600;
+            }
+            
+            // 创建庆祝动画
+            showCelebration() {
+                const successAnim = document.getElementById('successAnimation');
+                
+                // 重置动画
+                successAnim.style.display = 'block';
+                
+                // 移除旧的彩带
+                const existingConfetti = document.querySelectorAll('.confetti');
+                existingConfetti.forEach(el => el.remove());
+                
+                // 创建新彩带
+                this.createConfetti();
+                
+                // 3秒后隐藏动画
+                setTimeout(() => {
+                    successAnim.style.display = 'none';
+                    
+                    // 移除所有彩带
+                    const allConfetti = document.querySelectorAll('.confetti');
+                    allConfetti.forEach(el => el.remove());
+                }, 3000);
+            }
+            
+            // 创建彩带效果
+            createConfetti() {
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff9900'];
+                const container = document.getElementById('successAnimation');
+                
+                for (let i = 0; i < 150; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // 随机属性
+                    const size = Math.random() * 10 + 5;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.backgroundColor = color;
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.top = `${-Math.random() * 20}%`;
+                    confetti.style.opacity = '1';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    
+                    // 随机动画持续时间和延迟
+                    const duration = Math.random() * 3 + 2;
+                    const delay = Math.random() * 0.5;
+                    confetti.style.animation = `confetti-fall ${duration}s linear ${delay}s forwards`;
+                    
+                    container.appendChild(confetti);
+                }
+            }
         }
         
         // 页面加载完成后初始化游戏
@@ -586,5 +918,4 @@
         });
     </script>
 </body>
-
 </html>
