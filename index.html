@@ -5,125 +5,322 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数独游戏</title>
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #4ade80;
+            --warning-color: #facc15;
+            --danger-color: #f87171;
+            --light-bg: #f8fafc;
+            --dark-bg: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             margin: 0;
             min-height: 100vh;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 100%;
         }
         
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .tips {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+            max-width: 600px;
+            margin: 15px auto 0;
+        }
+        
+        .tips p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* 音效控制样式 */
+        .sound-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .sound-toggle {
+            width: 50px;
+            height: 24px;
+            background-color: #cbd5e1;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .sound-toggle.on {
+            background-color: var(--success-color);
+        }
+        
+        .sound-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .sound-toggle.on::after {
+            transform: translateX(26px);
         }
         
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
+            width: 100%;
         }
         
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             justify-content: center;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 600px;
         }
         
-        button {
-            padding: 10px 15px;
+        .btn {
+            padding: 12px 20px;
             font-size: 16px;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
+            border-radius: 8px;
+            background-color: var(--primary-color);
             color: white;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: var(--shadow);
         }
         
-        button:hover {
-            background-color: #45a049;
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #22c55e;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-bg);
+        }
+        
+        .btn-warning:hover {
+            background-color: #eab308;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #ef4444;
         }
         
         select {
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
         
         .sudoku-grid {
             display: grid;
             grid-template-columns: repeat(9, 1fr);
             grid-gap: 1px;
-            background-color: #000;
-            border: 3px solid #000;
+            background-color: var(--border-color);
+            border: 3px solid var(--border-color);
             max-width: 500px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
         }
         
         .cell {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fff;
+            background-color: var(--card-bg);
             font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             user-select: none;
+            transition: all 0.2s ease;
+            position: relative;
+            color: var(--text-primary);
+        }
+        
+        .cell:hover:not(.pre-filled) {
+            background-color: #e6f7ff;
+            transform: scale(1.05);
         }
         
         .cell:nth-child(3n):not(:nth-child(9n)) {
-            border-right: 2px solid #000;
+            border-right: 2px solid var(--border-color);
         }
         
         .cell:nth-child(n+19):nth-child(-n+27),
         .cell:nth-child(n+46):nth-child(-n+54) {
-            border-bottom: 2px solid #000;
+            border-bottom: 2px solid var(--border-color);
         }
         
         .cell.pre-filled {
-            background-color: #e0e0e0;
-            color: #333;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            color: var(--dark-bg);
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .cell.pre-filled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(79, 70, 229, 0.03) 100%);
+            border-radius: 4px;
         }
         
         .cell.selected {
-            background-color: #bde0fe;
+            background-color: #bae6fd;
+            box-shadow: inset 0 0 0 2px var(--accent-color);
         }
         
         .cell.error {
-            background-color: #ffcccc;
+            background-color: #fecaca;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
         }
         
         .timer {
-            font-size: 18px;
+            font-size: 1.2rem;
             margin-top: 10px;
-            font-weight: bold;
+            font-weight: 600;
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            color: var(--primary-color);
         }
         
         .message {
             margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: bold;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
         }
         
         .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
         }
         
         .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
         
         /* 成功动画效果 */
@@ -142,7 +339,6 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background-color: #f00;
             opacity: 0;
         }
         
@@ -151,13 +347,34 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 4em;
+            font-size: 5em;
             font-weight: bold;
             color: gold;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
             opacity: 0;
             animation: celebrate-pulse 1.5s ease-in-out;
             animation-fill-mode: forwards;
+            z-index: 3000;
+        }
+        
+        .win-message {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            animation: message-appear 2s ease-in-out 0.5s forwards;
+            z-index: 3001;
+        }
+        
+        @keyframes message-appear {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         @keyframes confetti-fall {
@@ -192,14 +409,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(51, 51, 51, 0.9);
-            padding: 15px;
+            background-color: rgba(30, 41, 59, 0.95);
+            padding: 20px 15px;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            gap: 12px;
             z-index: 1000;
             transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .virtual-keyboard.active {
@@ -207,29 +424,36 @@
         }
         
         .key {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             border: none;
-            border-radius: 8px;
-            padding: 15px 5px;
-            font-size: 20px;
+            border-radius: 12px;
+            padding: 18px 5px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            color: #333;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: #1e293b;
+            transition: all 0.2s ease;
         }
         
         .key:hover {
-            background-color: rgba(224, 224, 224, 0.95);
+            background-color: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        
+        .key:active {
+            transform: translateY(0);
         }
         
         .key.action {
-            background-color: rgba(76, 175, 80, 0.9);
+            background-color: rgba(76, 175, 80, 0.95);
             color: white;
         }
         
         .key.delete {
-            background-color: rgba(244, 67, 54, 0.9);
+            background-color: rgba(244, 67, 54, 0.95);
             color: white;
         }
         
@@ -239,7 +463,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
             z-index: 999;
             display: none;
         }
@@ -252,36 +476,76 @@
             .virtual-keyboard {
                 display: none;
             }
+            
+            .cell {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .sudoku-grid {
+                max-width: 550px;
+            }
         }
         
         @media (max-width: 600px) {
             .cell {
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
             }
             
             .sudoku-grid {
                 max-width: 350px;
             }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            select {
+                padding: 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>数独游戏</h1>
-    
-    <div class="game-container">
-        <div class="controls">
-            <select id="difficulty">
-                <option value="easy">简单</option>
-                <option value="medium" selected>中等</option>
-                <option value="hard">困难</option>
-            </select>
-            <button id="new-game-btn">新游戏</button>
-            <button id="check-btn">检查答案</button>
-            <button id="solve-btn">显示答案</button>
-        </div>
+    <div class="container">
+        <header>
+            <h1>🎯 数独游戏</h1>
+            <p class="subtitle">挑战你的逻辑思维能力</p>
+            <div class="tips">
+                <p><strong>游戏规则：</strong>每行、每列和每个3×3宫内都必须包含1-9的数字，不能重复。</p>
+            </div>
+        </header>
         
+        <div class="game-container">
+            <div class="controls">
+                <select id="difficulty">
+                    <option value="easy">简单</option>
+                    <option value="medium" selected>中等</option>
+                    <option value="hard">困难</option>
+                </select>
+                <button class="btn" id="new-game-btn">🆕 新游戏</button>
+                <button class="btn btn-warning" id="restart-btn">🔄 重新开始</button>
+                <button class="btn btn-success" id="hint-btn">💡 提示</button>
+                <button class="btn" id="check-btn">✅ 检查答案</button>
+                <button class="btn btn-danger" id="solve-btn">揭晓答案</button>
+                <div class="sound-control">
+                    <span>🔊 音效</span>
+                    <div class="sound-toggle" id="soundToggle"></div>
+                </div>
+            
         <div class="sudoku-grid" id="sudoku-grid"></div>
         
         <div class="timer" id="timer">时间: 00:00</div>
@@ -305,8 +569,10 @@
         <!-- 成功动画效果 -->
         <div class="success-animation" id="successAnimation">
             <div class="celebration-text">🏆</div>
+            <div class="win-message">恭喜过关！</div>
         </div>
     </div>
+</div>
 
     <script>
         class SudokuGame {
@@ -321,6 +587,7 @@
                 this.initializeGame();
                 this.setupEventListeners();
                 this.setupVirtualKeyboard();
+                this.setupSoundControl();
             }
             
             initializeGame() {
@@ -334,6 +601,14 @@
                     this.resetTimer();
                     this.initializeGame();
                     this.hideMessage();
+                });
+                
+                document.getElementById('restart-btn').addEventListener('click', () => {
+                    this.restartCurrentGame();
+                });
+                
+                document.getElementById('hint-btn').addEventListener('click', () => {
+                    this.showHint();
                 });
                 
                 document.getElementById('check-btn').addEventListener('click', () => {
@@ -860,21 +1135,24 @@
             // 创建庆祝动画
             showCelebration() {
                 const successAnim = document.getElementById('successAnimation');
-                
+                            
+                //播胜利音效
+                this.playVictorySound();
+                            
                 // 重置动画
                 successAnim.style.display = 'block';
-                
+                            
                 // 移除旧的彩带
                 const existingConfetti = document.querySelectorAll('.confetti');
                 existingConfetti.forEach(el => el.remove());
-                
+                            
                 // 创建新彩带
                 this.createConfetti();
-                
+                            
                 // 3秒后隐藏动画
                 setTimeout(() => {
                     successAnim.style.display = 'none';
-                    
+                                
                     // 移除所有彩带
                     const allConfetti = document.querySelectorAll('.confetti');
                     allConfetti.forEach(el => el.remove());
@@ -908,6 +1186,287 @@
                     confetti.style.animation = `confetti-fall ${duration}s linear ${delay}s forwards`;
                     
                     container.appendChild(confetti);
+                }
+            }
+            
+            // 重新开始当前游戏（重置到初始状态）
+            restartCurrentGame() {
+                // 将当前网格重置为初始状态
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        this.grid[row][col] = this.initialGrid[row][col];
+                    }
+                }
+                
+                // 重新渲染网格
+                this.renderGrid();
+                
+                // 重新开始计时器
+                this.startTimer();
+                
+                // 清除消息和错误标记
+                this.hideMessage();
+                this.clearErrorHighlights();
+                
+                this.showMessage('已重新开始当前盘面', 'success');
+            }
+            
+            // 显示提示功能
+            showHint() {
+                // 首先检查是否有选中的格子
+                if (this.selectedCell) {
+                    const { row, col } = this.selectedCell;
+                    
+                    // 检查选中的格子是否为空且可编辑
+                    if (this.grid[row][col] === 0 && !this.isInitialCell(row, col)) {
+                        // 获取该位置可能的数字
+                        const possibleNumbers = this.getPossibleNumbers(row, col);
+                        
+                        if (possibleNumbers.length > 0) {
+                            // 在单元格中显示可能的数字（小字体）
+                            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                            if (cell) {
+                                // 显示可能的数字
+                                cell.innerHTML = `
+                                    <div style="font-size: 10px; color: #666; text-align: center;">
+                                        ${possibleNumbers.join(',')}
+                                    </div>
+                                `;
+                                
+                                // 3秒后恢复原状
+                                setTimeout(() => {
+                                    if (this.grid[row][col] === 0) {
+                                        cell.textContent = '';
+                                    } else {
+                                        cell.textContent = this.grid[row][col];
+                                    }
+                                }, 3000);
+                                
+                                this.showMessage(`提示：第${row+1}行第${col+1}列可能的数字是：${possibleNumbers.join(',')}`, 'success');
+                                return;
+                            }
+                        } else {
+                            this.showMessage('该位置无有效数字可填入', 'error');
+                            return;
+                        }
+                    } else {
+                        this.showMessage('请选择一个空的可编辑格子', 'error');
+                        return;
+                    }
+                }
+                
+                // 如果没有选中格子，则寻找第一个空格
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (this.grid[row][col] === 0 && !this.isInitialCell(row, col)) {
+                            // 获取该位置可能的数字
+                            const possibleNumbers = this.getPossibleNumbers(row, col);
+                            
+                            if (possibleNumbers.length > 0) {
+                                // 在单元格中显示可能的数字（小字体）
+                                const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                                if (cell) {
+                                    // 显示可能的数字
+                                    cell.innerHTML = `
+                                        <div style="font-size: 10px; color: #666; text-align: center;">
+                                            ${possibleNumbers.join(',')}
+                                        </div>
+                                    `;
+                                    
+                                    // 3秒后恢复原状
+                                    setTimeout(() => {
+                                        if (this.grid[row][col] === 0) {
+                                            cell.textContent = '';
+                                        } else {
+                                            cell.textContent = this.grid[row][col];
+                                        }
+                                    }, 3000);
+                                    
+                                    this.showMessage(`提示：第${row+1}行第${col+1}列可能的数字是：${possibleNumbers.join(',')}`, 'success');
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                this.showMessage('没有可用的提示', 'error');
+            }
+            
+            // 获取指定位置可能的数字
+            getPossibleNumbers(row, col) {
+                const possible = [];
+                
+                for (let num = 1; num <= 9; num++) {
+                    if (this.isValidPlacement(this.grid, row, col, num)) {
+                        possible.push(num);
+                    }
+                }
+                
+                return possible;
+            }
+            
+            // 清除所有错误高亮
+            clearErrorHighlights() {
+                document.querySelectorAll('.cell.error').forEach(cell => {
+                    cell.classList.remove('error');
+                });
+            }
+                        
+            //胜利音效
+            playVictorySound() {
+                //检查音效是否开启
+                if (!this.soundEnabled) return;
+                            
+                try {
+                    // 创建音频上下文
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                                
+                    // 创建主增益节点
+                    const mainGain = audioContext.createGain();
+                    mainGain.connect(audioContext.destination);
+                    mainGain.gain.value = 0.3;
+                                
+                    //胜利旋律
+                    this.playVictoryMelody(audioContext, mainGain);
+                                
+                } catch (error) {
+                    console.log('音频播放失败:', error);
+                }
+            }
+                        
+            //播胜利旋律
+            playVictoryMelody(audioContext, output) {
+                // 更欢快的胜利旋律 - C大调进行曲风格
+                const melody = [
+                    // 第一部分：上行音阶
+                    { frequency: 261.63, duration: 0.15, type: 'sine' }, // C4
+                    { frequency: 329.63, duration: 0.15, type: 'sine' }, // E4
+                    { frequency: 392.00, duration: 0.15, type: 'sine' }, // G4
+                    { frequency: 523.25, duration: 0.2, type: 'sine' },  // C5
+                                
+                    // 第二部分：欢快跳跃
+                    { frequency: 659.25, duration: 0.1, type: 'triangle' }, // E5
+                    { frequency: 783.99, duration: 0.1, type: 'triangle' }, // G5
+                    { frequency: 659.25, duration: 0.15, type: 'sine' },    // E5
+                                
+                    // 第三部分：胜利高潮
+                    { frequency: 783.99, duration: 0.1, type: 'sine' },     // G5
+                    { frequency: 1046.50, duration: 0.3, type: 'sine' }      // C6
+                ];
+                            
+                let currentTime = audioContext.currentTime;
+                            
+                melody.forEach((note, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                                
+                    oscillator.connect(gainNode);
+                    gainNode.connect(output);
+                                
+                    oscillator.frequency.value = note.frequency;
+                    oscillator.type = note.type;
+                                
+                    // 更丰富的音量包络
+                    gainNode.gain.setValueAtTime(0, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.6, currentTime + 0.01);
+                                
+                    //根据音符长度调整衰减
+                    const decayTime = Math.min(note.duration * 0.7, 0.2);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + decayTime);
+                                
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + note.duration);
+                                
+                    //音间隔
+                    currentTime += note.duration + (index === 3 || index === 6 ? 0.08 : 0.03);
+                });
+                            
+                // 添加和声效果
+                setTimeout(() => {
+                    this.playHarmony(audioContext, output);
+                }, 100);
+            }
+                        
+            //播和声
+            playHarmony(audioContext, output) {
+                const harmonyNotes = [
+                    { frequency: 329.63, duration: 0.4, delay: 0 },    // E4
+                    { frequency: 392.00, duration: 0.4, delay: 0.1 },  // G4
+                    { frequency: 523.25, duration: 0.6, delay: 0.2 }   // C5
+                ];
+                            
+                harmonyNotes.forEach(note => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                                    
+                        oscillator.connect(gainNode);
+                        gainNode.connect(output);
+                                    
+                        oscillator.frequency.value = note.frequency;
+                        oscillator.type = 'sine';
+                                    
+                        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.duration * 0.8);
+                                    
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + note.duration);
+                    }, note.delay * 1000);
+                });
+            }
+                        
+            // 设置音效控制
+            setupSoundControl() {
+                const soundToggle = document.getElementById('soundToggle');
+                            
+                // 从本地存储获取音效设置
+                this.soundEnabled = localStorage.getItem('sudokuSoundEnabled') !== 'false';
+                            
+                // 更新UI状态
+                if (this.soundEnabled) {
+                    soundToggle.classList.add('on');
+                }
+                            
+                // 添加点击事件
+                soundToggle.addEventListener('click', () => {
+                    this.soundEnabled = !this.soundEnabled;
+                                
+                    if (this.soundEnabled) {
+                        soundToggle.classList.add('on');
+                        //播测试音效
+                        this.playTestSound();
+                    } else {
+                        soundToggle.classList.remove('on');
+                    }
+                                
+                    // 保存设置到本地存储
+                    localStorage.setItem('sudokuSoundEnabled', this.soundEnabled);
+                });
+            }
+                        
+            //测试音效
+            playTestSound() {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                                
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                                
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                                
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                                
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                } catch (error) {
+                    console.log('测试音效播放失败:', error);
                 }
             }
         }
