@@ -517,6 +517,305 @@
                 font-size: 14px;
             }
         }
+        
+        /*排榜模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: modal-pop 0.3s ease-out;
+        }
+        
+        @keyframes modal-pop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .leaderboard-filters {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .leaderboard-filters select {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .leaderboard-filters select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .leaderboard-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .rank {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #8B4513;
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%);
+            color: #696969;
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+            color: #8B4513;
+        }
+        
+        .rank-other {
+            background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+            color: var(--text-secondary);
+        }
+        
+        .player-info {
+            flex: 1;
+        }
+        
+        .player-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .player-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .player-time {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .player-date {
+            font-size: 0.85rem;
+        }
+        
+        .difficulty-tag {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .difficulty-easy {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .difficulty-medium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .difficulty-hard {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .empty-leaderboard {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-leaderboard p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .empty-leaderboard .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* 名字输入模态框样式 */
+        .name-input-container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .success-message {
+            font-size: 1.3rem;
+            color: var(--success-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .time-display {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        
+        .name-input-group {
+            margin-bottom: 25px;
+        }
+        
+        .name-input-group label {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        #playerName {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            text-align: center;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #playerName:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        #playerName::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .name-input-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 480px) {
+            .name-input-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .name-input-buttons .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -527,6 +826,7 @@
             <div class="tips">
                 <p><strong>游戏规则：</strong>每行、每列和每个3×3宫内都必须包含1-9的数字，不能重复。</p>
             </div>
+            <button class="btn btn-success" id="leaderboard-btn" style="margin-top: 15px;">🏆排榜</button>
         </header>
         
         <div class="game-container">
@@ -571,6 +871,54 @@
             <div class="celebration-text">🏆</div>
             <div class="win-message">恭喜过关！</div>
         </div>
+        
+        <!--排行榜模态框 -->
+        <div class="modal-overlay" id="leaderboardModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🏆 数独排行榜</h2>
+                    <button class="close-btn" id="closeLeaderboard">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="leaderboard-filters">
+                        <select id="leaderboard-difficulty">
+                            <option value="all">全部难度</option>
+                            <option value="easy">简单</option>
+                            <option value="medium" selected>中等</option>
+                            <option value="hard">困难</option>
+                        </select>
+                    </div>
+                    <div class="leaderboard-container">
+                        <div class="leaderboard-list" id="leaderboardList">
+                            <!--排行榜内容将在这里动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--名字输入模态框 -->
+        <div class="modal-overlay" id="nameInputModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎉完成！</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="name-input-container">
+                        <p class="success-message">您成功完成了数独挑战！</p>
+                        <p class="time-display" id="completionTime">用时：<span id="timeValue">00:00</span></p>
+                        <div class="name-input-group">
+                            <label for="playerName">请输入您的名字：</label>
+                            <input type="text" id="playerName" maxlength="15" placeholder="输入您的名字">
+                        </div>
+                        <div class="name-input-buttons">
+                            <button class="btn btn-success" id="confirmName">确认记录</button>
+                            <button class="btn btn-warning" id="skipName">跳过</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -583,17 +931,22 @@
                 this.selectedCell = null;
                 this.startTime = null;
                 this.timerInterval = null;
+                this.gameStartTime = null; // 用于记录游戏开始时间
                 
                 this.initializeGame();
                 this.setupEventListeners();
                 this.setupVirtualKeyboard();
                 this.setupSoundControl();
+                this.setupLeaderboard();
             }
             
             initializeGame() {
                 this.generateSudoku();
                 this.renderGrid();
                 this.startTimer();
+                
+                // 重置开始时间（用于排行榜记录）
+                this.gameStartTime = new Date();
             }
             
             setupEventListeners() {
@@ -623,6 +976,46 @@
                     this.resetTimer();
                     this.initializeGame();
                     this.hideMessage();
+                });
+                
+                //排行榜相关事件
+                document.getElementById('leaderboard-btn').addEventListener('click', () => {
+                    this.showLeaderboard();
+                });
+                
+                document.getElementById('closeLeaderboard').addEventListener('click', () => {
+                    this.closeLeaderboard();
+                });
+                
+                document.getElementById('leaderboardModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'leaderboardModal') {
+                        this.closeLeaderboard();
+                    }
+                });
+                
+                document.getElementById('leaderboard-difficulty').addEventListener('change', () => {
+                    this.filterLeaderboard();
+                });
+                
+                //名字输入相关事件
+                document.getElementById('confirmName').addEventListener('click', () => {
+                    this.confirmPlayerName();
+                });
+                
+                document.getElementById('skipName').addEventListener('click', () => {
+                    this.skipNameInput();
+                });
+                
+                document.getElementById('playerName').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.confirmPlayerName();
+                    }
+                });
+                
+                document.getElementById('nameInputModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'nameInputModal') {
+                        this.skipNameInput();
+                    }
                 });
             }
             
@@ -869,17 +1262,20 @@
             setCellValue(row, col, value) {
                 if (!this.isInitialCell(row, col)) {
                     this.grid[row][col] = value;
-                    
+                                
                     const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
                     if (cell) {
                         cell.textContent = value !== 0 ? value : '';
-                        
+                                    
                         // 移除错误类
                         cell.classList.remove('error');
                     }
-                    
+                                
                     // 实时验证
                     this.validateCell(row, col);
+                                
+                    // 检查是否完成（自动检查）
+                    this.checkCompletionAuto();
                 }
             }
             
@@ -1149,13 +1545,16 @@
                 // 创建新彩带
                 this.createConfetti();
                             
-                // 3秒后隐藏动画
+                // 3秒后隐藏动画，并在结束后显示名字输入框
                 setTimeout(() => {
                     successAnim.style.display = 'none';
-                                
-                    // 移除所有彩带
+                                                
+                    //移除所有彩带
                     const allConfetti = document.querySelectorAll('.confetti');
                     allConfetti.forEach(el => el.remove());
+                                    
+                    //庆动画结束后显示名字输入框
+                    this.showNameInputModal();
                 }, 3000);
             }
             
@@ -1306,11 +1705,70 @@
                 return possible;
             }
             
-            // 清除所有错误高亮
+            //清除所有错误高亮
             clearErrorHighlights() {
                 document.querySelectorAll('.cell.error').forEach(cell => {
                     cell.classList.remove('error');
                 });
+            }
+                        
+            // 自动检查是否完成
+            checkCompletionAuto() {
+                // 检查是否所有格子都已填满
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (this.grid[row][col] === 0) {
+                            return false; //还空格
+                        }
+                    }
+                }
+                            
+                //所有格子都填满了，自动检查答案
+                setTimeout(() => {
+                    this.checkSolutionAuto();
+                }, 500); //500ms再检查，让用户看到最后填入的数字
+                            
+                return true;
+            }
+                        
+            // 自动检查解决方案
+            checkSolutionAuto() {
+                //检查是否有错误
+                let hasErrors = false;
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (this.grid[row][col] !== 0 && !this.validateCell(row, col)) {
+                            hasErrors = true;
+                            break;
+                        }
+                    }
+                    if (hasErrors) break;
+                }
+                            
+                if (hasErrors) {
+                    this.highlightErrors();
+                    this.showMessage('数独有误，请检查标记为红色的格子！', 'error-message');
+                    return false;
+                }
+                            
+                //检查答案是否正确
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (this.grid[row][col] !== this.solution[row][col]) {
+                            this.showMessage('答案不正确，请继续努力！', 'error-message');
+                            return false;
+                        }
+                    }
+                }
+                            
+                //正确
+                this.showMessage('恭喜你，数独解答正确！', 'success');
+                this.stopTimer();
+                this.showCelebration();
+                                
+                // 不再直接显示名字输入框，等庆祝动画结束后再显示
+                                
+                return true;
             }
                         
             //胜利音效
@@ -1468,6 +1926,219 @@
                 } catch (error) {
                     console.log('测试音效播放失败:', error);
                 }
+            }
+            
+            // 初始化排行榜
+            setupLeaderboard() {
+                this.loadLeaderboard();
+            }
+            
+
+            
+            // 获取玩家名字
+            getPlayerName() {
+                const name = localStorage.getItem('sudokuPlayerName');
+                return name || '玩家';
+            }
+            
+            //显示名字输入模态框
+            showNameInputModal() {
+                // 获取当前游戏时间
+                const currentTime = new Date();
+                const gameDuration = Math.floor((currentTime - this.gameStartTime) / 1000);
+                const timeFormatted = this.formatTime(gameDuration);
+                
+                // 保存游戏数据供后续使用
+                this.currentGameTime = gameDuration;
+                this.currentGameDifficulty = document.getElementById('difficulty').value;
+                
+                // 更新显示的时间
+                document.getElementById('timeValue').textContent = timeFormatted;
+                
+                //显示模态框
+                document.getElementById('nameInputModal').classList.add('active');
+                
+                //到输入框
+                setTimeout(() => {
+                    document.getElementById('playerName').focus();
+                }, 300);
+            }
+            
+            //确认玩家名字
+            confirmPlayerName() {
+                const nameInput = document.getElementById('playerName');
+                let playerName = nameInput.value.trim();
+                
+                // 如果没有输入名字，使用默认名字
+                if (!playerName) {
+                    playerName = '玩家';
+                }
+                
+                // 保存玩家名字
+                localStorage.setItem('sudokuPlayerName', playerName);
+                
+                //记录到排行榜
+                this.addLeaderboardRecord(playerName, this.currentGameTime, this.currentGameDifficulty);
+                
+                // 关闭模态框
+                this.closeNameInputModal();
+                
+                //显示成功消息
+                this.showMessage('记录成功！欢迎下次挑战！', 'success');
+                
+                // 2秒后开始新游戏
+                setTimeout(() => {
+                    this.initializeGame();
+                    this.hideMessage();
+                }, 2000);
+            }
+            
+            //名字输入
+            skipNameInput() {
+                // 关闭模态框
+                this.closeNameInputModal();
+                
+                //直开始新游戏
+                this.showMessage('开始新的挑战！', 'success');
+                setTimeout(() => {
+                    this.initializeGame();
+                    this.hideMessage();
+                }, 1000);
+            }
+            
+            // 关闭名字输入模态框
+            closeNameInputModal() {
+                document.getElementById('nameInputModal').classList.remove('active');
+                document.getElementById('playerName').value = '';
+            }
+            
+            // 添加记录到排行榜
+            addLeaderboardRecord(name, time, difficulty) {
+                const record = {
+                    name: name,
+                    time: time,
+                    difficulty: difficulty,
+                    date: new Date().toLocaleString('zh-CN'),
+                    timestamp: new Date().getTime()
+                };
+                
+                // 保存到本地存储
+                const leaderboard = this.getLeaderboard();
+                leaderboard.push(record);
+                this.saveLeaderboard(leaderboard);
+                
+                // 更新排行榜显示
+                this.updateLeaderboardDisplay();
+            }
+            
+            // 获取排行榜数据
+            getLeaderboard() {
+                const leaderboard = localStorage.getItem('sudokuLeaderboard');
+                return leaderboard ? JSON.parse(leaderboard) : [];
+            }
+            
+            // 保存排行榜数据
+            saveLeaderboard(leaderboard) {
+                localStorage.setItem('sudokuLeaderboard', JSON.stringify(leaderboard));
+            }
+            
+            // 读取排行榜数据
+            loadLeaderboard() {
+                const leaderboard = this.getLeaderboard();
+                //按时间和难度排序
+                leaderboard.sort((a, b) => {
+                    //按时间升序
+                    if (a.time !== b.time) {
+                        return a.time - b.time;
+                    }
+                    // 如果时间相同，按时间戳排序
+                    return a.timestamp - b.timestamp;
+                });
+                this.saveLeaderboard(leaderboard);
+                return leaderboard;
+            }
+            
+            //显示排行榜
+            showLeaderboard() {
+                this.updateLeaderboardDisplay();
+                document.getElementById('leaderboardModal').classList.add('active');
+            }
+            
+            //关闭排榜
+            closeLeaderboard() {
+                document.getElementById('leaderboardModal').classList.remove('active');
+            }
+            
+            // 更新排行榜显示
+            updateLeaderboardDisplay() {
+                this.renderLeaderboard();
+            }
+            
+            //排榜
+            filterLeaderboard() {
+                this.renderLeaderboard();
+            }
+            
+            // 渲染排行榜
+            renderLeaderboard() {
+                const leaderboard = this.getLeaderboard();
+                const selectedDifficulty = document.getElementById('leaderboard-difficulty').value;
+                const listContainer = document.getElementById('leaderboardList');
+                
+                //根据选择筛选数据
+                const filtered = selectedDifficulty === 'all' ? 
+                    leaderboard : 
+                    leaderboard.filter(item => item.difficulty === selectedDifficulty);
+                
+                // 前显示
+                if (filtered.length === 0) {
+                    listContainer.innerHTML = '<div class="empty-leaderboard"><span class="emoji">🏆</span><p>暂无记录</p><p>快来挑战成为第一个上榜的玩家吧！</p></div>';
+                    return;
+                }
+                
+                // 生成排行榜HTML
+                const leaderboardHTML = filtered.slice(0, 50).map((item, index) => {
+                    const rank = index + 1;
+                    const timeFormatted = this.formatTime(item.time);
+                    const difficultyClass = "difficulty-" + item.difficulty;
+                    const difficultyText = this.getDifficultyText(item.difficulty);
+                    
+                    let rankClass = "rank-other";
+                    if (rank === 1) rankClass = "rank-1";
+                    else if (rank === 2) rankClass = "rank-2";
+                    else if (rank === 3) rankClass = "rank-3";
+                    
+                    return '<div class="leaderboard-item">' +
+                        '<div class="rank " + rankClass + "">' + rank + '</div>' +
+                        '<div class="player-info">' +
+                        '<div class="player-name">' + item.name + '</div>' +
+                        '<div class="player-details">' +
+                        '<span class="player-time">' + timeFormatted + '</span>' +
+                        '<span class="difficulty-tag ' + difficultyClass + '">' + difficultyText + '</span>' +
+                        '<span class="player-date">' + item.date + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+                }).join("");
+                
+                listContainer.innerHTML = leaderboardHTML;
+            }
+            
+            //格化时间
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            // 获取难度文本
+            getDifficultyText(difficulty) {
+                const difficultyMap = {
+                    'easy': '简单',
+                    'medium': '中等',
+                    'hard': '困难'
+                };
+                return difficultyMap[difficulty] || difficulty;
             }
         }
         
